@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import Card from 'react-bootstrap/Card';
 import  Button  from 'react-bootstrap/Button';
+import Rating from './Rating';
 
 
 const Product = (props) => {
@@ -13,9 +14,10 @@ const Product = (props) => {
                   <img src={product.image} alt=""></img>
                 </Link>
                 <Card.Body>
-                <Link href={`/product/${product.slug}`}>
+                <Link to={`/product/${product.slug}`}>
                     <Card.Title>{product.name}</Card.Title>
                   </Link>
+                  <Rating rating={product.rating} numReviews={product.numReviews} />
                   <Card.Text>
                     {product.price}
                   </Card.Text>
