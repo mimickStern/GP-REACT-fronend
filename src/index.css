@@ -54,4 +54,9 @@ header > a {
   .rating span {
     color: gold;
   }
+
+  .img-large {
+    max-width: 100%;
+  }
+  
   
