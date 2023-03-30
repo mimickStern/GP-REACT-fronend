@@ -18,8 +18,8 @@ const CartScreen = () => {
   } = state;
 
   const updateCartHandler = async (item, quantity) => {
-    const { data } = await axios.get(`/api/product/${item._id}`);
-    if (data.countInStock <= quantity) {
+    const { data } = await axios.get(`/api/products/product/${item._id}`);
+    if (data.countInStock < quantity) {
       window.alert("Sorry. Product is out of stock");
       return;
     }
@@ -28,6 +28,7 @@ const CartScreen = () => {
       payload: { ...item, quantity },
     });
   };
+  
 
   const removeItemHandler = (item) => {
     ctxDispatch({ type: 'CART_REMOVE_ITEM', payload: item });
@@ -79,7 +80,8 @@ const CartScreen = () => {
                         updateCartHandler(item, item.quantity + 1)
                       }
                         variant="light"
-                        disabled={item.quantity === item.countInStock}
+                        
+                        disabled={item.quantity === item.countInStock }
                       >
                         <i className="fas fa-plus-circle"></i>
                       </Button>

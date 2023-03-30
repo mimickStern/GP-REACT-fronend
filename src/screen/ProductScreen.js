@@ -60,7 +60,7 @@ const ProductScreen = () => {
     
     const existItem = cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1; 
-    const { data } = await axios.get(`/api/product/${product._id}`);
+    const { data } = await axios.get(`/api/products/product/${product._id}`);
     console.log(data)
 
     if (data.countInStock < quantity) {
@@ -74,6 +74,7 @@ const ProductScreen = () => {
     });
 
   };
+  
 
   return loading ? (
     <LoadingBox/>
