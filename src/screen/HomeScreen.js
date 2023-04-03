@@ -47,7 +47,6 @@ const HomeScreen = () => {
     fetchData();
   }, []);
 
-  console.log(products);
   return (
     <div>
       <Helmet>
