@@ -70,6 +70,7 @@ const OrderScreen = () => {
 
   function onApprove(data, actions) {
     return actions.order.capture().then(async function (details) {
+        console.log(details)
       try {
         dispatch({ type: "PAY_REQUEST" });
         const { data } = await axios.put(
