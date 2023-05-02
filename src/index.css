@@ -77,3 +77,40 @@ main {
   border-bottom: 0.2rem solid #f08000;
   color: #f08000;
 }
+
+/* sidebar */
+.navbar-brand {
+  font-weight: bold;
+}
+
+.side-navbar {
+  width: 240px;
+  height: 100%;
+  position: absolute;
+  left: -300px;
+  background-color: #100901;
+  transition: 0.5s;
+}
+
+.site-container {
+  transition: 0.4s;
+}
+
+.active-cont {
+  margin-left: 240px;
+}
+
+.active-nav {
+  left: 0;
+}
+
+#button-search {
+  border: solid 1px #0147ae;
+  box-shadow: none;
+  border-radius: 0px 3px 3px 0px;
+}
+
+#q {
+  border-radius: 3px 0px 0px 3px;
+  box-shadow: none;
+}
