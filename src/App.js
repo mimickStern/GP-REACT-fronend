@@ -25,6 +25,7 @@ import SearchBox from "./components/SearchBox";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import { getError } from "./utilis";
+import SearchScreen from "./screen/SearchScreen";
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -150,6 +151,7 @@ function App() {
               <Route path="/order/:id" element={<OrderScreen />} />
               <Route path="/orderhistory" element={<OrderHistoryScreen />} />
               <Route path="/profile" element={<ProfileScreen />} />
+              <Route path="/search" element={<SearchScreen />} />
               <Route path="/" element={<HomeScreen />}></Route>
             </Routes>
           </Container>
