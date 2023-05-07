@@ -61,6 +61,10 @@ const SigninScreen = () => {
           <Button type="submit" >Sign In</Button>
         </div>
         <div className="mb-3">
+          Forgot Password?{" "}
+          <Link to={`/forgot-pwd`}>OY VEY</Link>
+        </div>
+        <div className="mb-3">
           New customer?{" "}
           <Link to={`/signup?redirect=${redirect}`}>Create your account</Link>
         </div>
