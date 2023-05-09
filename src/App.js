@@ -27,6 +27,9 @@ import axios from "axios";
 import { getError } from "./utilis";
 import SearchScreen from "./screen/SearchScreen";
 import ForgotPwdScreen from "./screen/ForgotPwdScreen";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
+import ProductListScreen from "./screen/ProductListScreen";
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -54,31 +57,34 @@ function App() {
     fetchCategories();
   }, []);
 
-
   return (
     <BrowserRouter>
-       <div
+      <div
         className={
           sidebarIsOpen
-            ? 'd-flex flex-column site-container active-cont'
-            : 'd-flex flex-column site-container'
+            ? "d-flex flex-column site-container active-cont"
+            : "d-flex flex-column site-container"
         }
       >
         <ToastContainer position="top-center" limit={1} />
         <header>
           <Navbar bg="dark" variant="dark" expand="lg">
             <Container>
-            <Button variant="dark" onClick={() => setSidebarIsOpen(!sidebarIsOpen)} >
+              <Button
+                variant="dark"
+                onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
+              >
                 <i className="fas fa-bars"></i>
-              </Button>&nbsp;
+              </Button>
+              &nbsp;
               <LinkContainer to="/">
                 <Navbar.Brand> webstore</Navbar.Brand>
               </LinkContainer>
-
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
-              <SearchBox />
+                <SearchBox />
                 <Nav className="me-auto  w-100  justify-content-end">
+                {userInfo?.isAdmin === false ||!userInfo ?(
                   <Link to="/cart" className="nav-link">
                     Cart
                     {cart.cartItems.length > 0 && (
@@ -87,7 +93,10 @@ function App() {
                       </Badge>
                     )}
                   </Link>
-                  {userInfo ? (
+                      ) : userInfo?.isAdmin === true && (
+                        <span></span>
+                      )}
+                  {userInfo?.isAdmin === false ? (
                     <NavDropdown
                       title={userInfo?.username}
                       id="basic-nav-dropdown"
@@ -107,10 +116,34 @@ function App() {
                         Sign Out
                       </Link>
                     </NavDropdown>
-                  ) : (
+                   ) : !userInfo && (
                     <Link className="nav-link" to="/signin">
                       Sign In
                     </Link>
+                  )}
+                  {userInfo?.isAdmin && (
+                    <NavDropdown title="Admin" id="admin-nav-dropdown">
+                      <LinkContainer to="/admin/products">
+                        <NavDropdown.Item>Add/Edit Products</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/orders">
+                        <NavDropdown.Item>View/Edit Orders</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/users">
+                        <NavDropdown.Item>View/Edit Users</NavDropdown.Item>
+                      </LinkContainer>
+                      <NavDropdown.Divider />
+                      <LinkContainer to="/profile">
+                        <NavDropdown.Item>Admin Profile</NavDropdown.Item>
+                      </LinkContainer>
+                      <Link
+                        className="dropdown-item"
+                        to="#signout"
+                        onClick={signoutHandler}
+                      >
+                        Sign Out
+                      </Link>
+                    </NavDropdown>
                   )}
                 </Nav>
               </Navbar.Collapse>
@@ -121,19 +154,22 @@ function App() {
         <div
           className={
             sidebarIsOpen
-              ? 'active-nav side-navbar d-flex justify-content-between flex-wrap flex-column'
-              : 'side-navbar d-flex justify-content-between flex-wrap flex-column'
+              ? "active-nav side-navbar d-flex justify-content-between flex-wrap flex-column"
+              : "side-navbar d-flex justify-content-between flex-wrap flex-column"
           }
         >
-         <Nav className="flex-column text-white w-100 p-2">
+          <Nav className="flex-column text-white w-100 p-2">
             <Nav.Item>
               <strong>Categories</strong>
             </Nav.Item>
             {categories.map((category) => (
               <Nav.Item key={category}>
-                  <Link                
+                <Link
                   to={`/search?category=${category}`}
-                  onClick={() => setSidebarIsOpen(false)}>{category}</Link>    
+                  onClick={() => setSidebarIsOpen(false)}
+                >
+                  {category}
+                </Link>
               </Nav.Item>
             ))}
           </Nav>
@@ -149,11 +185,34 @@ function App() {
               <Route path="/signup" element={<SignupScreen />} />
               <Route path="/payment" element={<PaymentMethodScreen />}></Route>
               <Route path="/placeorder" element={<PlaceOrderScreen />} />
-              <Route path="/order/:id" element={<OrderScreen />} />
-              <Route path="/orderhistory" element={<OrderHistoryScreen />} />
-              <Route path="/profile" element={<ProfileScreen />} />
+              <Route
+                path="/order/:id"
+                element={
+                  <ProtectedRoute>
+                    <OrderScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/orderhistory"
+                element={
+                  <ProtectedRoute>
+                    <OrderHistoryScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    {" "}
+                    <ProfileScreen />{" "}
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/search" element={<SearchScreen />} />
               <Route path="/forgot-pwd" element={<ForgotPwdScreen />} />
+              {/* <Route path="/admin/products" element={<AdminRoute><ProductListScreen/></AdminRoute>}></Route> */}
               <Route path="/" element={<HomeScreen />}></Route>
             </Routes>
           </Container>
