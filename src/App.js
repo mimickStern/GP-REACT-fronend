@@ -212,7 +212,7 @@ function App() {
               />
               <Route path="/search" element={<SearchScreen />} />
               <Route path="/forgot-pwd" element={<ForgotPwdScreen />} />
-              {/* <Route path="/admin/products" element={<AdminRoute><ProductListScreen/></AdminRoute>}></Route> */}
+              <Route path="/admin/products" element={<AdminRoute><ProductListScreen/></AdminRoute>}/>
               <Route path="/" element={<HomeScreen />}></Route>
             </Routes>
           </Container>
