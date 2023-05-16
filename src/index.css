@@ -118,3 +118,12 @@ main {
 .products-row {
   margin-top: -320px;
 }
+
+button.thumbnail {
+  padding: 0;
+}
+
+#deleteImage {
+  border-radius: 3px 3px 0px 0px;
+  color: rgb(249, 109, 109);
+}

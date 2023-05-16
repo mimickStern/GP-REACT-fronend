@@ -1,4 +1,4 @@
-import React, { useContext, useReducer, useEffect} from "react";
+import React, { useContext, useReducer, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Row from "react-bootstrap/Row";
@@ -12,7 +12,7 @@ import { Helmet } from "react-helmet-async";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import { getError } from "../utilis.js";
-import { Store } from '../Store.js';
+import { Store } from "../Store.js";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -33,6 +33,7 @@ const reducer = (state, action) => {
 const ProductScreen = () => {
   const params = useParams();
   const { slug } = params;
+  const [selectedImage, setSelectedImage] = useState("");
   const [{ loading, error, product }, dispatch] = useReducer(reducer, {
     product: [],
     loading: true,
@@ -52,41 +53,38 @@ const ProductScreen = () => {
     fetchData();
   }, [slug]);
 
-  const { state, dispatch: ctxDispatch} = useContext(Store);
-  const  {cart}  = state;
-  console.log(cart)
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { cart } = state;
+  console.log(cart);
 
-  const addToCartHandler = async() => {
-    
+  const addToCartHandler = async () => {
     const existItem = cart.cartItems.find((x) => x._id === product._id);
-    const quantity = existItem ? existItem.quantity + 1 : 1; 
+    const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/product/${product._id}`);
-    console.log(data)
+    console.log(data);
 
     if (data.countInStock < quantity) {
-      window.alert('Product is out of stock')
+      window.alert("Product is out of stock");
       return;
     }
 
     ctxDispatch({
-      type: 'CART_ADD_ITEM',
-      payload: { ...product, quantity},
+      type: "CART_ADD_ITEM",
+      payload: { ...product, quantity },
     });
-
   };
-  
 
   return loading ? (
-    <LoadingBox/>
+    <LoadingBox />
   ) : error ? (
-    <MessageBox variant='danger'>{error}</MessageBox>
+    <MessageBox variant="danger">{error}</MessageBox>
   ) : (
     <div>
       <Row>
         <Col md={6}>
           <img
             className="img-large"
-            src={product.image}
+            src={selectedImage || product.image}
             alt={product.name}
           ></img>
         </Col>
@@ -105,6 +103,25 @@ const ProductScreen = () => {
               ></Rating>
             </ListGroup.Item>
             <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+            <ListGroup.Item>
+              <Row xs={1} md={2} className="g-2">
+                {[product.image, ...product.images].map((x) => (
+                  <Col key={x}>
+                    <Card>
+                      <Button
+                        className="thumbnail"
+                        type="button"
+                        variant="light"
+                        onClick={() => setSelectedImage(x)}
+                      >
+                        <Card.Img variant="top" src={x} alt="product" />
+                      </Button>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            </ListGroup.Item>
+
             <ListGroup.Item>Description: {product.description}</ListGroup.Item>
           </ListGroup>
         </Col>
@@ -133,7 +150,9 @@ const ProductScreen = () => {
                 {product.countInStock > 0 && (
                   <ListGroup.Item>
                     <div className="d-grid">
-                      <Button variant="primary" onClick={addToCartHandler}>Add To Cart</Button>
+                      <Button variant="primary" onClick={addToCartHandler}>
+                        Add To Cart
+                      </Button>
                     </div>
                   </ListGroup.Item>
                 )}
