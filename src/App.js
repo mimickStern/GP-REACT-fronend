@@ -31,6 +31,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 import ProductListScreen from "./screen/ProductListScreen";
 import ProductEditScreen from "./screen/ProductEditScreen";
+import OrderListScreen from "./screen/OrderListScreen";
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -215,6 +216,7 @@ function App() {
               <Route path="/forgot-pwd" element={<ForgotPwdScreen />} />
               <Route path="/admin/products" element={<AdminRoute><ProductListScreen/></AdminRoute>}/>
               <Route path="/admin/product/:id" element={<AdminRoute> <ProductEditScreen /> </AdminRoute>} />
+              <Route path="/admin/orders" element={<AdminRoute> <OrderListScreen /> </AdminRoute>} />
               <Route path="/" element={<HomeScreen />}></Route>
             </Routes>
           </Container>

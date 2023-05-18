@@ -33,6 +33,20 @@ const reducer = (state, action) => {
     case "CREATE_FAIL":
       return { ...state, loadingCreate: false };
 
+    case "DELETE_REQUEST":
+      return { ...state, loadingDelete: true, successDelete: false };
+    case "DELETE_SUCCESS":
+      return {
+        ...state,
+        loadingDelete: false,
+        successDelete: true,
+      };
+    case "DELETE_FAIL":
+      return { ...state, loadingDelete: false, successDelete: false };
+
+    case "DELETE_RESET":
+      return { ...state, loadingDelete: false, successDelete: false };
+
     default:
       return state;
   }
@@ -50,11 +64,21 @@ const ProductListScreen = () => {
   const sp = new URLSearchParams(search);
   const page = sp.get("page") || 1;
 
-  const [{ loading, error, products, pages, loadingCreate }, dispatch] =
-    useReducer(reducer, {
-      loading: true,
-      error: "",
-    });
+  const [
+    {
+      loading,
+      error,
+      products,
+      pages,
+      loadingCreate,
+      loadingDelete,
+      successDelete,
+    },
+    dispatch,
+  ] = useReducer(reducer, {
+    loading: true,
+    error: "",
+  });
 
   const { state } = useContext(Store);
   const { userInfo } = state;
@@ -80,6 +104,23 @@ const ProductListScreen = () => {
     }
   };
 
+  const deleteHandler = async (product) => {
+    if (window.confirm("Are you sure you want to delete product?")) {
+      try {
+        await axios.delete(`/api/products/product/${product._id}`, {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        });
+        toast.success("product deleted successfully");
+        dispatch({ type: "DELETE_SUCCESS" });
+      } catch (err) {
+        toast.error(getError(error));
+        dispatch({
+          type: "DELETE_FAIL",
+        });
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -92,8 +133,12 @@ const ProductListScreen = () => {
         dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       }
     };
-    fetchData();
-  }, [page, userInfo]);
+    if (successDelete) {
+      dispatch({ type: "DELETE_RESET" });
+    } else {
+      fetchData();
+    }
+  }, [page, userInfo, successDelete]);
 
   return (
     <div>
@@ -109,7 +154,7 @@ const ProductListScreen = () => {
           </div>
         </Col>
       </Row>
-      {loadingCreate && <LoadingBox />};
+      {loadingCreate && <LoadingBox />};{loadingDelete && <LoadingBox />}
       {loading ? (
         <LoadingBox></LoadingBox>
       ) : error ? (
@@ -142,6 +187,14 @@ const ProductListScreen = () => {
                       onClick={() => navigate(`/admin/product/${product._id}`)}
                     >
                       Edit
+                    </Button>
+                    &nbsp;
+                    <Button
+                      type="button"
+                      variant="danger"
+                      onClick={() => deleteHandler(product)}
+                    >
+                      Delete
                     </Button>
                   </td>
                 </tr>
