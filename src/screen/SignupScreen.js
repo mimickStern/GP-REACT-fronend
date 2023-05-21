@@ -90,6 +90,17 @@ const SignupScreen = () => {
                         <Form.Label>Confirm Password</Form.Label>
                         <Form.Control type="password" onChange={(e) => setConfirmPassword(e.target.value)} required />
                     </Form.Group>
+                    <Form.Group className="form-check mb-3" controlId="agreeTerms">
+                        <input
+                            type="checkbox"
+                            required
+                            className="form-check-input"
+                        />
+                        <Form.Label className="form-check-label" Style="margin-right:30px">
+                          By clicking the following, you accept our <Link to={`/terms-of-service`}>Terms Of Service</Link>.
+                        </Form.Label>
+                    </Form.Group>
+
                 </Form.Group>
 
                 <div className="mb-3">
